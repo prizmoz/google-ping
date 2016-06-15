@@ -1,4 +1,6 @@
 <?php
+$timeStart = microtime(true);
+$currentTime = 0;
 $urls = file('url.txt'); // считываем урлы из файла в массив
 shuffle($urls); // мешаем массив с урлами случайным образом
 $file_urls = fopen('url.txt', 'a');
@@ -10,7 +12,9 @@ $proxyCount = count($proxy);
 
 foreach ($urls as $num => $url){
     curlPing($url);
-    echo 'Ping ' . $url . ' ' . ($num + 1) . '/' . $urlsCount, PHP_EOL;
+    $currentTime = microtime(true) - $timeStart;
+    // выводим инфу в формате текущий_урл/всего_урлов || скорость урл/мин
+    echo 'Pinged ' . ($num + 1) . '/' . $urlsCount . ' || Speed: ' . round($num * 60 / $currentTime) . ' urls/min', PHP_EOL;
 }
 
 function curlPing($url)
@@ -33,3 +37,5 @@ function curlPing($url)
     }
     return $result;
 }
+
+echo 'Pinged ' . $urlsCount . ' urls / ' . round($currentTime) . ' sec or ' . round($currentTime / 60, 1) . ' min';
